@@ -13,7 +13,11 @@ type List[T any] interface {
 	AppendAll(elements ...T) error
 
 	// Add inserts an element at the specific index in the list
+	// It pushes all elements after the specific index to the right
 	Add(index int64, element T) error
+
+	// Set replaces the element at the specific index in the list with newElement
+	Set(index int64, newElement T) error
 
 	// Get returns the element at the specific index in the list
 	Get(index int64) (T, error)
