@@ -42,7 +42,7 @@ goods/
 ### 1. Linear Data Structures
 
 #### List
-- [ ] ArrayList (Dynamic Array)
+- [x] ArrayList (Dynamic Array)
 - [ ] SinglyLinkedList
 - [ ] DoublyLinkedList
 - [ ] CircularLinkedList
@@ -149,7 +149,7 @@ func TestDataStructure_Operation(t *testing.T) {
 ### Complexity Documentation
 ```go
 // Insert adds an element to the list.
-// Time Complexity: O(1) amortized, O(n) worst case
+// Time Complexity: O(1) average, O(n) worst case
 // Space Complexity: O(1)
 func (l *ArrayList[T]) Insert(element T) { ... }
 ```
@@ -159,5 +159,6 @@ func (l *ArrayList[T]) Insert(element T) { ... }
 ## Current Progress
 - [x] Project initialization
 - [x] List interface definition
-- [ ] ArrayList implementation
-- [ ] LinkedList implementation
+- [x] ArrayList implementation (with 15 unit tests)
+- [ ] SinglyLinkedList implementation
+- [ ] DoublyLinkedList implementation
