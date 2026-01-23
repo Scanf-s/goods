@@ -14,19 +14,19 @@ type List[T any] interface {
 
 	// Add inserts an element at the specific index in the list
 	// It pushes all elements after the specific index to the right
-	Add(index int64, element T) error
+	Add(index int, element T) error
 
 	// Set replaces the element at the specific index in the list with newElement
-	Set(index int64, newElement T) error
+	Set(index int, newElement T) error
 
 	// Get returns the element at the specific index in the list
-	Get(index int64) (T, error)
+	Get(index int) (T, error)
 
 	// Delete removes the element at the specific index in the list
-	Delete(index int64) error
+	Delete(index int) error
 
 	// Size returns the number of elements in the list
-	Size() int64
+	Size() int
 
 	// IsEmpty returns true if the list is empty
 	IsEmpty() bool

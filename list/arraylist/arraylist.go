@@ -10,16 +10,16 @@ type ArrayList[T any] struct {
 	data []T
 
 	// listCapacity represents the capacity of the list (total number of elements that could be stored)
-	listCapacity int64
+	listCapacity int
 
 	// listSize represents the number of elements currently stored in the list
-	listSize int64
+	listSize int
 }
 
 // New returns an empty ArrayList with the specified initial capacity.
 // Time Complexity: O(1)
 // Space Complexity: O(capacity)
-func New[T any](capacity int64) *ArrayList[T] {
+func New[T any](capacity int) *ArrayList[T] {
 	return &ArrayList[T]{
 		data:         make([]T, capacity),
 		listCapacity: capacity,
@@ -45,7 +45,7 @@ func (al *ArrayList[T]) Append(element T) error {
 // Time Complexity: O(k) where k is number of elements, O(n+k) when resizing
 // Space Complexity: O(1) average, O(n+k) when resizing
 func (al *ArrayList[T]) AppendAll(elements ...T) error {
-	required := al.listSize + int64(len(elements))
+	required := al.listSize + int(len(elements))
 	for required > al.listCapacity {
 		if err := al.increaseCapacity(); err != nil {
 			return fmt.Errorf("failed to increase capacity: %w", err)
@@ -61,7 +61,7 @@ func (al *ArrayList[T]) AppendAll(elements ...T) error {
 // Add inserts an element at the specified index, shifting later elements to right.
 // Time Complexity: O(n)
 // Space Complexity: O(1) average, O(n) when resizing
-func (al *ArrayList[T]) Add(index int64, element T) error {
+func (al *ArrayList[T]) Add(index int, element T) error {
 	// Allow inserting at index 0 to listSize (inclusive)
 	if index < 0 || index > al.listSize {
 		return fmt.Errorf("index %d out of range [0, %d]", index, al.listSize)
@@ -87,7 +87,7 @@ func (al *ArrayList[T]) Add(index int64, element T) error {
 // Set replaces the element at the specified index.
 // Time Complexity: O(1)
 // Space Complexity: O(1)
-func (al *ArrayList[T]) Set(index int64, element T) error {
+func (al *ArrayList[T]) Set(index int, element T) error {
 	if err := al.checkIndexRange(index); err != nil {
 		return err
 	}
@@ -99,7 +99,7 @@ func (al *ArrayList[T]) Set(index int64, element T) error {
 // If an invalid index is provided, it returns the default value for T type.
 // Time Complexity: O(1)
 // Space Complexity: O(1)
-func (al *ArrayList[T]) Get(index int64) (T, error) {
+func (al *ArrayList[T]) Get(index int) (T, error) {
 	var defaultValue T
 	if err := al.checkIndexRange(index); err != nil {
 		return defaultValue, err
@@ -110,7 +110,7 @@ func (al *ArrayList[T]) Get(index int64) (T, error) {
 // Delete removes the element at the specified index, shifting later elements left.
 // Time Complexity: O(n)
 // Space Complexity: O(1) average, O(n) when resizing
-func (al *ArrayList[T]) Delete(index int64) error {
+func (al *ArrayList[T]) Delete(index int) error {
 	if err := al.checkIndexRange(index); err != nil {
 		return err
 	}
@@ -137,7 +137,7 @@ func (al *ArrayList[T]) Delete(index int64) error {
 // Size returns the number of elements in the list.
 // Time Complexity: O(1)
 // Space Complexity: O(1)
-func (al *ArrayList[T]) Size() int64 {
+func (al *ArrayList[T]) Size() int {
 	return al.listSize
 }
 
@@ -185,7 +185,7 @@ func (al *ArrayList[T]) decreaseCapacity() error {
 }
 
 // checkIndexRange validates that index is within [0, listSize).
-func (al *ArrayList[T]) checkIndexRange(index int64) error {
+func (al *ArrayList[T]) checkIndexRange(index int) error {
 	if index < 0 || index >= al.listSize {
 		return fmt.Errorf("index %d out of range [0, %d)", index, al.listSize)
 	}
