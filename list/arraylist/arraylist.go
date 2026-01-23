@@ -1,6 +1,6 @@
 package arraylist
 
-import "list"
+import "goods/list"
 
 type Arraylist interface {
 	EnsureCapacity(list *list.List)

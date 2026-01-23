@@ -1,34 +1,28 @@
 package list
 
-type (
-	// Node represents a node in a linked list.
-	Node struct {
-		data any
-		next *Node
-	}
+// List is the common interface for all list datastructures.
+// Generic L could be slice([]) or Node pointer
+// Generic T could be various builtin types or struct
+type List[T any] interface {
 
-	// List is a linked list data structure.
-	List struct {
-		head *Node
-		tail *Node
-		size int
-	}
+	// Append adds an element to the end of the list.
+	Append(element T) error
 
-	// ListOperation is an interface for a list data structure.
-	ListOperation interface {
-		// Append function add elements in the tail of the List
-		Append(list *List, element any)
+	// Add inserts an element at the specific index in the list
+	Add(index int, element T) error
 
-		// Add function add elements in the specific location of the List
-		Add(list *List, index int, element any)
+	// Get returns the element at the specific index in the list
+	Get(index int) (T, error)
 
-		// Delete function delete element in the specific location of the List
-		Delete(list *List, index int)
+	// Delete removes the element at the specific index in the list
+	Delete(index int) error
 
-		// Get retrieves the node at the specified index.
-		Get(list *List, index int)
+	// Size returns the number of elements in the list
+	Size() int
 
-		// IsEmpty checks if the List is empty.
-		IsEmpty(list *List)
-	}
-)
+	// IsEmpty returns true if the list is empty
+	IsEmpty() bool
+
+	// Clear removes all elements from the list
+	Clear() error
+}
