@@ -8,7 +8,7 @@ Data structures and Algorithm implementation using Golang for study and review w
 
 #### List
 - [x] ArrayList (Dynamic Array)
-- [ ] SinglyLinkedList
+- [x] SinglyLinkedList
 - [ ] DoublyLinkedList
 - [ ] CircularLinkedList
 

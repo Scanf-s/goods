@@ -43,7 +43,7 @@ goods/
 
 #### List
 - [x] ArrayList (Dynamic Array)
-- [ ] SinglyLinkedList
+- [x] SinglyLinkedList
 - [ ] DoublyLinkedList
 - [ ] CircularLinkedList
 
@@ -160,5 +160,5 @@ func (l *ArrayList[T]) Insert(element T) { ... }
 - [x] Project initialization
 - [x] List interface definition
 - [x] ArrayList implementation (with 15 unit tests)
-- [ ] SinglyLinkedList implementation
+- [x] SinglyLinkedList implementation (need to add unit tests)
 - [ ] DoublyLinkedList implementation
