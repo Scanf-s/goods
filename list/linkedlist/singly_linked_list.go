@@ -1,23 +1,17 @@
 package linkedlist
 
-import "fmt"
-
-// Node represents a single node in the linked list.
-type Node[T any] struct {
-	// data stores the element value
-	data T
-
-	// next points to the next node in the list
-	next *Node[T]
-}
+import (
+	"fmt"
+	"goods/list"
+)
 
 // SinglyLinkedList represents a singly linked list data structure.
 type SinglyLinkedList[T any] struct {
 	// head points to the first node in the list
-	head *Node[T]
+	head *list.Node[T]
 
 	// tail points to the last node in the list
-	tail *Node[T]
+	tail *list.Node[T]
 
 	// nodeCount represents the number of nodes currently in the list
 	nodeCount int
@@ -35,14 +29,14 @@ func NewSinglyLinkedList[T any]() *SinglyLinkedList[T] {
 // Space Complexity: O(1)
 func (sl *SinglyLinkedList[T]) Append(data T) error {
 	if sl.head == nil {
-		sl.head = newNode(data)
+		sl.head = list.NewNode(data)
 		sl.tail = sl.head
 		sl.nodeCount++
 		return nil
 	}
 
-	sl.tail.next = newNode(data)
-	sl.tail = sl.tail.next
+	sl.tail.Next = list.NewNode(data)
+	sl.tail = sl.tail.Next
 	sl.nodeCount++
 	return nil
 }
@@ -69,8 +63,8 @@ func (sl *SinglyLinkedList[T]) Add(index int, data T) error {
 
 	// If index refers to the head of the sll
 	if index == 0 {
-		node := newNode(data)
-		node.next = sl.head
+		node := list.NewNode(data)
+		node.Next = sl.head
 		sl.head = node
 		sl.nodeCount++
 		return nil
@@ -79,11 +73,11 @@ func (sl *SinglyLinkedList[T]) Add(index int, data T) error {
 	// Move to the position and insert a new node
 	currentNode := sl.head
 	for i := 0; i < index-1; i++ {
-		currentNode = currentNode.next
+		currentNode = currentNode.Next
 	}
-	node := newNode(data)
-	node.next = currentNode.next
-	currentNode.next = node
+	node := list.NewNode(data)
+	node.Next = currentNode.Next
+	currentNode.Next = node
 	sl.nodeCount++
 	return nil
 }
@@ -98,9 +92,9 @@ func (sl *SinglyLinkedList[T]) Set(index int, data T) error {
 
 	currentNode := sl.head
 	for i := 0; i < index; i++ {
-		currentNode = currentNode.next
+		currentNode = currentNode.Next
 	}
-	currentNode.data = data
+	currentNode.Data = data
 	return nil
 }
 
@@ -116,9 +110,9 @@ func (sl *SinglyLinkedList[T]) Get(index int) (T, error) {
 
 	currentNode := sl.head
 	for i := 0; i < index; i++ {
-		currentNode = currentNode.next
+		currentNode = currentNode.Next
 	}
-	return currentNode.data, nil
+	return currentNode.Data, nil
 }
 
 // Delete removes the element at the specified index.
@@ -130,7 +124,7 @@ func (sl *SinglyLinkedList[T]) Delete(index int) error {
 	}
 
 	if index == 0 {
-		sl.head = sl.head.next
+		sl.head = sl.head.Next
 		if sl.head == nil {
 			sl.tail = sl.head
 		}
@@ -140,10 +134,10 @@ func (sl *SinglyLinkedList[T]) Delete(index int) error {
 
 	currentNode := sl.head
 	for i := 0; i < index-1; i++ {
-		currentNode = currentNode.next
+		currentNode = currentNode.Next
 	}
-	currentNode.next = currentNode.next.next
-	if currentNode.next == nil {
+	currentNode.Next = currentNode.Next.Next
+	if currentNode.Next == nil {
 		sl.tail = currentNode
 	}
 	sl.nodeCount--
@@ -171,11 +165,6 @@ func (sl *SinglyLinkedList[T]) Clear() {
 	sl.nodeCount = 0
 	sl.tail = nil
 	sl.head = nil
-}
-
-// newNode creates a new node with the given data.
-func newNode[T any](data T) *Node[T] {
-	return &Node[T]{data: data, next: nil}
 }
 
 // checkIndexRange validates that index is within [0, nodeCount).
