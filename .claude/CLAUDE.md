@@ -48,7 +48,7 @@ goods/
 - [x] CircularLinkedList
 
 #### Stack
-- [ ] ArrayStack
+- [x] ArrayStack
 - [ ] LinkedStack
 
 #### Queue
@@ -160,7 +160,9 @@ func (l *ArrayList[T]) Insert(element T) { ... }
 - [x] Project initialization
 - [x] List interface definition
 - [x] ArrayList implementation (with 15 unit tests)
-- [x] SinglyLinkedList implementation (need to add unit tests)
+- [x] SinglyLinkedList implementation
 - [x] DoublyLinkedList implementation
 - [x] CircularLinkedList implementation
-- [ ] Stack interface definition
+- [x] Stack interface definition
+- [ ] ArrayStack implementation (Need to add unit tests)
+- [ ]

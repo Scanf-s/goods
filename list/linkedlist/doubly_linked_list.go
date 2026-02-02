@@ -17,6 +17,9 @@ type DoublyLinkedList[T any] struct {
 	nodeCount int
 }
 
+// Compile time interface implementation check
+var _ list.List[int] = (*DoublyLinkedList[int])(nil)
+
 func NewDoublyLinkedList[T any]() *DoublyLinkedList[T] {
 	return &DoublyLinkedList[T]{head: nil, tail: nil, nodeCount: 0}
 }

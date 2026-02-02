@@ -13,6 +13,9 @@ type CircularLinkedList[T any] struct {
 	nodeCount int
 }
 
+// Compile time interface implementation check
+var _ list.List[int] = (*CircularLinkedList[int])(nil)
+
 func NewCircularLinkedList[T any]() *CircularLinkedList[T] {
 	return &CircularLinkedList[T]{head: nil, tail: nil, nodeCount: 0}
 }

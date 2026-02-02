@@ -17,6 +17,9 @@ type SinglyLinkedList[T any] struct {
 	nodeCount int
 }
 
+// Compile time interface implementation check
+var _ list.List[int] = (*SinglyLinkedList[int])(nil)
+
 // NewSinglyLinkedList returns an empty SinglyLinkedList.
 // Time Complexity: O(1)
 // Space Complexity: O(1)

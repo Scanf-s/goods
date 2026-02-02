@@ -13,7 +13,7 @@ Data structures and Algorithm implementation using Golang for study and review w
 - [x] CircularLinkedList
 
 #### Stack
-- [ ] ArrayStack
+- [x] ArrayStack
 - [ ] LinkedStack
 
 #### Queue
