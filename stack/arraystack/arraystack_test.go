@@ -29,15 +29,15 @@ func TestArrayStack_Push_Integers(t *testing.T) {
 func TestArrayStack_Push_Objects(t *testing.T) {
 	type Student struct {
 		name string
-		gpa float32
+		gpa  float32
 	}
 	arrayStack := NewArrayStack[Student]()
 	if arrayStack == nil {
 		t.Errorf("New stack array has to be initialized")
 	}
-	arrayStack.Push(Student{name:"test1", gpa:3.2})
-	arrayStack.Push(Student{name:"test2", gpa:3.5})
-	arrayStack.Push(Student{name:"test3", gpa:4.0})
+	arrayStack.Push(Student{name: "test1", gpa: 3.2})
+	arrayStack.Push(Student{name: "test2", gpa: 3.5})
+	arrayStack.Push(Student{name: "test3", gpa: 4.0})
 
 	if arrayStack.Size() != 3 {
 		t.Errorf("Stack should have 3 elements but got %d", arrayStack.Size())
@@ -103,7 +103,7 @@ func TestArrayStack_Top_ShouldReturnError(t *testing.T) {
 
 	if _, err := arrayStack.Top(); err == nil {
 		t.Errorf("Stack.Top() should return an error if user is trying to fetch top element of the empty stack")
-	}	
+	}
 }
 
 func TestArrayStack_IsEmpty_True(t *testing.T) {
@@ -111,7 +111,7 @@ func TestArrayStack_IsEmpty_True(t *testing.T) {
 	if arrayStack == nil {
 		t.Errorf("New stack array has to be initialized")
 	}
-	
+
 	if !arrayStack.IsEmpty() {
 		t.Error("Stack should be empty")
 	}
@@ -123,7 +123,7 @@ func TestArrayStack_IsEmpty_False(t *testing.T) {
 		t.Errorf("New stack array has to be initialized")
 	}
 	arrayStack.Push(1)
-	
+
 	if arrayStack.IsEmpty() {
 		t.Error("Stack should be not empty")
 	}
@@ -135,7 +135,7 @@ func TestArrayStack_Size(t *testing.T) {
 		t.Errorf("New stack array has to be initialized")
 	}
 	arrayStack.Push(1)
-	
+
 	if arrayStack.Size() != 1 {
 		t.Error("Stack size should be 1")
 	}
