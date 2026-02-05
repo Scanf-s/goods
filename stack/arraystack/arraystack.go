@@ -16,11 +16,11 @@ type ArrayStack[T any] struct {
 // Compile-time check to ensure ArrayStack implements stack.Stack interface.
 var _ stack.Stack[int] = (*ArrayStack[int])(nil)
 
-// New creates and returns an empty ArrayStack.
+// NewArrayStack creates and returns an empty ArrayStack.
 //
 // Time Complexity: O(1)
 // Space Complexity: O(1)
-func New[T any]() *ArrayStack[T] {
+func NewArrayStack[T any]() *ArrayStack[T] {
 	return &ArrayStack[T]{data: make([]T, 0)}
 }
 
