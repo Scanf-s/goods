@@ -164,5 +164,5 @@ func (l *ArrayList[T]) Insert(element T) { ... }
 - [x] DoublyLinkedList implementation
 - [x] CircularLinkedList implementation
 - [x] Stack interface definition
-- [ ] ArrayStack implementation (Need to add unit tests)
-- [ ]
+- [x] ArrayStack implementation (Need to add unit tests)
+- [ ] LinkedStack implementation
