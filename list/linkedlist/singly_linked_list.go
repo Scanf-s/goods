@@ -44,6 +44,24 @@ func (sl *SinglyLinkedList[T]) Append(data T) error {
 	return nil
 }
 
+// Prepend adds an element in front of the list
+// Time Complexity: O(1)
+// Space Complexity: O(1)
+func (sl *SinglyLinkedList[T]) Prepend(data T) error {
+	if sl.head == nil {
+		sl.head = list.NewNode(data)
+		sl.tail = sl.head
+		sl.nodeCount++
+		return nil
+	}
+
+	newNode := list.NewNode(data)
+	newNode.Next = sl.head
+	sl.head = newNode
+	sl.nodeCount++
+	return nil
+}
+
 // AppendAll adds multiple elements to the end of the list.
 // Time Complexity: O(k) where k is number of elements
 // Space Complexity: O(k)
@@ -116,6 +134,39 @@ func (sl *SinglyLinkedList[T]) Get(index int) (T, error) {
 		currentNode = currentNode.Next
 	}
 	return currentNode.Data, nil
+}
+
+// Head returns the data of the head element.
+// Returns an error if the list is empty.
+// Time Complexity: O(1)
+// Space Complexity: O(1)
+func (sl *SinglyLinkedList[T]) Head() (T, error) {
+	var data T
+	if sl.head == nil {
+		return data, fmt.Errorf("cannot get head element from empty list")
+	}
+	return sl.head.Data, nil
+}
+
+// PopHead removes and returns the data of the head element.
+// Returns an error if the list is empty.
+// Time Complexity: O(1)
+// Space Complexity: O(1)
+func (sl *SinglyLinkedList[T]) PopHead() (T, error) {
+	var data T
+	if sl.head == nil {
+		return data, fmt.Errorf("cannot pop head element from empty list")
+	}
+
+	head := sl.head
+	sl.head = head.Next
+	if sl.head == nil {
+		sl.tail = nil
+	}
+	head.Next = nil
+	data = head.Data
+	sl.nodeCount--
+	return data, nil
 }
 
 // Delete removes the element at the specified index.

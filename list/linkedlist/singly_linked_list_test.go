@@ -404,6 +404,247 @@ func TestSinglyLinkedList_WithStrings(t *testing.T) {
 	}
 }
 
+func TestSinglyLinkedList_Prepend(t *testing.T) {
+	list := NewSinglyLinkedList[int]()
+
+	if err := list.Prepend(1); err != nil {
+		t.Errorf("Prepend failed: %s", err)
+	}
+	// list: [1]
+
+	if list.Size() != 1 {
+		t.Errorf("Expected size 1, got %d", list.Size())
+	}
+	if list.head != list.tail {
+		t.Error("After first prepend, head and tail should be the same")
+	}
+	if list.head.Data != 1 {
+		t.Errorf("Head data = %d, expected 1", list.head.Data)
+	}
+
+	if err := list.Prepend(2); err != nil {
+		t.Errorf("Prepend failed: %s", err)
+	}
+	if err := list.Prepend(3); err != nil {
+		t.Errorf("Prepend failed: %s", err)
+	}
+	// list: [3, 2, 1]
+
+	if list.Size() != 3 {
+		t.Errorf("Expected size 3, got %d", list.Size())
+	}
+
+	expected := []int{3, 2, 1}
+	for i, exp := range expected {
+		val, err := list.Get(i)
+		if err != nil {
+			t.Errorf("Get(%d) failed: %s", i, err)
+		}
+		if val != exp {
+			t.Errorf("Get(%d) = %d, expected %d", i, val, exp)
+		}
+	}
+
+	if list.head.Data != 3 {
+		t.Errorf("Head data = %d, expected 3", list.head.Data)
+	}
+	if list.tail.Data != 1 {
+		t.Errorf("Tail data = %d, expected 1", list.tail.Data)
+	}
+}
+
+func TestSinglyLinkedList_Prepend_MixedWithAppend(t *testing.T) {
+	list := NewSinglyLinkedList[int]()
+
+	// Append 2, 3 then Prepend 1, 0 → [0, 1, 2, 3]
+	if err := list.Append(2); err != nil {
+		t.Errorf("Append failed: %s", err)
+	}
+	if err := list.Append(3); err != nil {
+		t.Errorf("Append failed: %s", err)
+	}
+	if err := list.Prepend(1); err != nil {
+		t.Errorf("Prepend failed: %s", err)
+	}
+	if err := list.Prepend(0); err != nil {
+		t.Errorf("Prepend failed: %s", err)
+	}
+
+	if list.Size() != 4 {
+		t.Errorf("Expected size 4, got %d", list.Size())
+	}
+
+	expected := []int{0, 1, 2, 3}
+	for i, exp := range expected {
+		val, _ := list.Get(i)
+		if val != exp {
+			t.Errorf("Get(%d) = %d, expected %d", i, val, exp)
+		}
+	}
+
+	if list.head.Data != 0 {
+		t.Errorf("Head data = %d, expected 0", list.head.Data)
+	}
+	if list.tail.Data != 3 {
+		t.Errorf("Tail data = %d, expected 3", list.tail.Data)
+	}
+}
+
+func TestSinglyLinkedList_Head(t *testing.T) {
+	list := NewSinglyLinkedList[int]()
+
+	if err := list.AppendAll(10, 20, 30); err != nil {
+		t.Errorf("AppendAll failed: %s", err)
+	}
+
+	val, err := list.Head()
+	if err != nil {
+		t.Errorf("Head failed: %s", err)
+	}
+	if val != 10 {
+		t.Errorf("Head = %d, expected 10", val)
+	}
+
+	// Head should not mutate the list
+	if list.Size() != 3 {
+		t.Errorf("Size changed after Head: expected 3, got %d", list.Size())
+	}
+	val, _ = list.Head()
+	if val != 10 {
+		t.Errorf("Second Head = %d, expected 10", val)
+	}
+}
+
+func TestSinglyLinkedList_Head_EmptyList(t *testing.T) {
+	list := NewSinglyLinkedList[int]()
+
+	_, err := list.Head()
+	if err == nil {
+		t.Error("Head on empty list should return error")
+	}
+}
+
+func TestSinglyLinkedList_PopHead(t *testing.T) {
+	list := NewSinglyLinkedList[int]()
+
+	if err := list.AppendAll(1, 2, 3); err != nil {
+		t.Errorf("AppendAll failed: %s", err)
+	}
+
+	val, err := list.PopHead()
+	if err != nil {
+		t.Errorf("PopHead failed: %s", err)
+	}
+	if val != 1 {
+		t.Errorf("PopHead = %d, expected 1", val)
+	}
+	if list.Size() != 2 {
+		t.Errorf("Expected size 2, got %d", list.Size())
+	}
+	if list.head.Data != 2 {
+		t.Errorf("Head data = %d, expected 2", list.head.Data)
+	}
+
+	val, _ = list.PopHead()
+	if val != 2 {
+		t.Errorf("PopHead = %d, expected 2", val)
+	}
+
+	val, _ = list.PopHead()
+	if val != 3 {
+		t.Errorf("PopHead = %d, expected 3", val)
+	}
+
+	if list.Size() != 0 {
+		t.Errorf("Expected size 0, got %d", list.Size())
+	}
+}
+
+func TestSinglyLinkedList_PopHead_EmptyList(t *testing.T) {
+	list := NewSinglyLinkedList[int]()
+
+	_, err := list.PopHead()
+	if err == nil {
+		t.Error("PopHead on empty list should return error")
+	}
+}
+
+func TestSinglyLinkedList_PopHead_LastElement(t *testing.T) {
+	list := NewSinglyLinkedList[int]()
+	if err := list.Append(42); err != nil {
+		t.Errorf("Append failed: %s", err)
+	}
+
+	val, err := list.PopHead()
+	if err != nil {
+		t.Errorf("PopHead failed: %s", err)
+	}
+	if val != 42 {
+		t.Errorf("PopHead = %d, expected 42", val)
+	}
+
+	if list.Size() != 0 {
+		t.Errorf("Expected size 0, got %d", list.Size())
+	}
+	if !list.IsEmpty() {
+		t.Error("List should be empty after popping last element")
+	}
+	if list.head != nil {
+		t.Error("Head should be nil after popping last element")
+	}
+	if list.tail != nil {
+		t.Error("Tail should be nil after popping last element")
+	}
+}
+
+func TestSinglyLinkedList_PopHead_AppendAfterEmpty(t *testing.T) {
+	list := NewSinglyLinkedList[int]()
+	if err := list.AppendAll(1, 2); err != nil {
+		t.Errorf("AppendAll failed: %s", err)
+	}
+
+	if _, err := list.PopHead(); err != nil {
+		t.Errorf("PopHead failed: %s", err)
+	}
+	if _, err := list.PopHead(); err != nil {
+		t.Errorf("PopHead failed: %s", err)
+	}
+
+	// Append after fully draining must not leave a dangling tail.
+	if err := list.Append(99); err != nil {
+		t.Errorf("Append after drain failed: %s", err)
+	}
+
+	if list.Size() != 1 {
+		t.Errorf("Expected size 1, got %d", list.Size())
+	}
+	if list.head == nil || list.head.Data != 99 {
+		t.Errorf("Head should hold 99 after re-append")
+	}
+	if list.tail == nil || list.tail.Data != 99 {
+		t.Errorf("Tail should hold 99 after re-append")
+	}
+	if list.head != list.tail {
+		t.Error("Head and tail should be the same after re-appending one element")
+	}
+}
+
+func TestSinglyLinkedList_PopHead_DetachesNextPointer(t *testing.T) {
+	list := NewSinglyLinkedList[int]()
+	if err := list.AppendAll(1, 2, 3); err != nil {
+		t.Errorf("AppendAll failed: %s", err)
+	}
+
+	popped := list.head
+	if _, err := list.PopHead(); err != nil {
+		t.Errorf("PopHead failed: %s", err)
+	}
+
+	if popped.Next != nil {
+		t.Error("Popped node's Next should be detached to prevent leaking internal state")
+	}
+}
+
 func TestSinglyLinkedList_WithStructs(t *testing.T) {
 	type Person struct {
 		Name string

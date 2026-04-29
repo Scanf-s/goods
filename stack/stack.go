@@ -5,7 +5,7 @@ package stack
 // Elements are added and removed from the same end (top).
 type Stack[T any] interface {
 	// Push adds an element to the top of the stack.
-	Push(element T)
+	Push(element T) error
 
 	// Pop removes and returns the top element from the stack.
 	// Returns an error if the stack is empty.

@@ -28,8 +28,9 @@ func NewArrayStack[T any]() *ArrayStack[T] {
 //
 // Time Complexity: O(1) average, O(n) worst case when reallocation occurs
 // Space Complexity: O(1) average
-func (as *ArrayStack[T]) Push(data T) {
+func (as *ArrayStack[T]) Push(data T) error {
 	as.data = append(as.data, data)
+	return nil
 }
 
 // Pop removes and returns the top element from the stack.

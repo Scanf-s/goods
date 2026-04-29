@@ -1,32 +1,22 @@
-package arraystack
+package linkedstack
 
 import "testing"
 
 func TestArrayStack_New(t *testing.T) {
-	arrayStack := NewArrayStack[int]()
+	arrayStack := NewLinkedStack[int]()
 	if arrayStack == nil {
 		t.Errorf("New stack array has to be initialized")
 	}
 }
 
 func TestArrayStack_Push_Integers(t *testing.T) {
-	arrayStack := NewArrayStack[int]()
-	if arrayStack == nil || arrayStack.data == nil {
+	arrayStack := NewLinkedStack[int]()
+	if arrayStack == nil {
 		t.Errorf("New stack array has to be initialized")
-		return
 	}
-	err := arrayStack.Push(1)
-	if err != nil {
-		return
-	}
-	err = arrayStack.Push(2)
-	if err != nil {
-		return
-	}
-	err = arrayStack.Push(3)
-	if err != nil {
-		return
-	}
+	arrayStack.Push(1)
+	arrayStack.Push(2)
+	arrayStack.Push(3)
 
 	if arrayStack.Size() != 3 {
 		t.Errorf("Stack should have 3 elements but got %d", arrayStack.Size())
@@ -41,7 +31,7 @@ func TestArrayStack_Push_Objects(t *testing.T) {
 		name string
 		gpa  float32
 	}
-	arrayStack := NewArrayStack[Student]()
+	arrayStack := NewLinkedStack[Student]()
 	if arrayStack == nil {
 		t.Errorf("New stack array has to be initialized")
 	}
@@ -58,7 +48,7 @@ func TestArrayStack_Push_Objects(t *testing.T) {
 }
 
 func TestArrayStack_Pop_NormalCase(t *testing.T) {
-	arrayStack := NewArrayStack[int]()
+	arrayStack := NewLinkedStack[int]()
 	if arrayStack == nil {
 		t.Errorf("New stack array has to be initialized")
 	}
@@ -83,7 +73,7 @@ func TestArrayStack_Pop_NormalCase(t *testing.T) {
 }
 
 func TestArrayStack_Pop_EmptyStack(t *testing.T) {
-	arrayStack := NewArrayStack[int]()
+	arrayStack := NewLinkedStack[int]()
 	if arrayStack == nil {
 		t.Errorf("New stack array has to be initialized")
 	}
@@ -94,7 +84,7 @@ func TestArrayStack_Pop_EmptyStack(t *testing.T) {
 }
 
 func TestArrayStack_Top_ShouldReturnValue(t *testing.T) {
-	arrayStack := NewArrayStack[int]()
+	arrayStack := NewLinkedStack[int]()
 	if arrayStack == nil {
 		t.Errorf("New stack array has to be initialized")
 	}
@@ -106,7 +96,7 @@ func TestArrayStack_Top_ShouldReturnValue(t *testing.T) {
 }
 
 func TestArrayStack_Top_ShouldReturnError(t *testing.T) {
-	arrayStack := NewArrayStack[int]()
+	arrayStack := NewLinkedStack[int]()
 	if arrayStack == nil {
 		t.Errorf("New stack array has to be initialized")
 	}
@@ -117,7 +107,7 @@ func TestArrayStack_Top_ShouldReturnError(t *testing.T) {
 }
 
 func TestArrayStack_IsEmpty_True(t *testing.T) {
-	arrayStack := NewArrayStack[int]()
+	arrayStack := NewLinkedStack[int]()
 	if arrayStack == nil {
 		t.Errorf("New stack array has to be initialized")
 	}
@@ -128,7 +118,7 @@ func TestArrayStack_IsEmpty_True(t *testing.T) {
 }
 
 func TestArrayStack_IsEmpty_False(t *testing.T) {
-	arrayStack := NewArrayStack[int]()
+	arrayStack := NewLinkedStack[int]()
 	if arrayStack == nil {
 		t.Errorf("New stack array has to be initialized")
 	}
@@ -140,7 +130,7 @@ func TestArrayStack_IsEmpty_False(t *testing.T) {
 }
 
 func TestArrayStack_Size(t *testing.T) {
-	arrayStack := NewArrayStack[int]()
+	arrayStack := NewLinkedStack[int]()
 	if arrayStack == nil {
 		t.Errorf("New stack array has to be initialized")
 	}
