@@ -2,16 +2,13 @@ package queue
 
 type (
 	Queue[T any] interface {
-		// Enqueue is ...
-		Enqueue(element T) error
+		// Offer adds new element into the queue data structure
+		Offer(element T) error
 
-		// Peek is ...
+		// Peek returns an element in front of the queue without removing it.
 		Peek() (T, error)
 
-		// FrontPeek is ...
-		FrontPeek() (T, error)
-
-		// Dequeue is ...
-		Dequeue() (T, error)
+		// Poll is returns an element in front of the queue as well as removes the front element.
+		Poll() (T, error)
 	}
 )
