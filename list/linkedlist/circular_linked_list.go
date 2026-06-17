@@ -68,25 +68,23 @@ func (cl *CircularLinkedList[T]) Prepend(data T) error {
 }
 
 func (cl *CircularLinkedList[T]) Add(index int, data T) error {
-	if cl.IsEmpty() {
-		return fmt.Errorf("cannot add element when list is empty")
+	if index < 0 || index > cl.nodeCount {
+		return fmt.Errorf("index %d out of range [0, %d]", index, cl.nodeCount)
 	}
-	convertedIndex := cl.convertIndex(index)
 
-	node := list.NewNode(data)
-	if convertedIndex == 0 {
-		node.Next = cl.head
-		cl.tail.Next = node
-		cl.head = node
-		cl.nodeCount++
-		return nil
+	if index == 0 {
+		return cl.Prepend(data)
+	}
+
+	if index == cl.nodeCount {
+		return cl.Append(data)
 	}
 
 	currentNode := cl.head
-	for i := 0; i < convertedIndex-1; i++ {
+	for i := 0; i < index-1; i++ {
 		currentNode = currentNode.Next
 	}
-
+	node := list.NewNode(data)
 	node.Next = currentNode.Next
 	currentNode.Next = node
 	cl.nodeCount++
