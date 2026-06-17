@@ -2,8 +2,8 @@
 package linkedstack
 
 import (
-	"goods/list/linkedlist"
-	"goods/stack"
+	"github.com/Scanf-s/goods/list/linkedlist"
+	"github.com/Scanf-s/goods/stack"
 )
 
 // LinkedStack is a LIFO stack implemented using a singly linked list.

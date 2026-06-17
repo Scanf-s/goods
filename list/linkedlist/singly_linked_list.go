@@ -2,7 +2,7 @@ package linkedlist
 
 import (
 	"fmt"
-	"goods/list"
+	"github.com/Scanf-s/goods/list"
 )
 
 // SinglyLinkedList represents a singly linked list data structure.
@@ -78,17 +78,18 @@ func (sl *SinglyLinkedList[T]) AppendAll(data ...T) error {
 // Time Complexity: O(n)
 // Space Complexity: O(1)
 func (sl *SinglyLinkedList[T]) Add(index int, data T) error {
-	if err := sl.checkIndexRange(index); err != nil {
-		return err
+	if index < 0 || index > sl.nodeCount {
+		return fmt.Errorf("index %d out of range [0, %d]", index, sl.nodeCount)
 	}
 
 	// If index refers to the head of the sll
 	if index == 0 {
-		node := list.NewNode(data)
-		node.Next = sl.head
-		sl.head = node
-		sl.nodeCount++
-		return nil
+		return sl.Prepend(data)
+	}
+
+	// If user wants to Append
+	if index == sl.nodeCount {
+		return sl.Append(data)
 	}
 
 	// Move to the position and insert a new node

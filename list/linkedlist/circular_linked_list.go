@@ -2,7 +2,7 @@ package linkedlist
 
 import (
 	"fmt"
-	"goods/list"
+	"github.com/Scanf-s/goods/list"
 )
 
 type CircularLinkedList[T any] struct {
@@ -43,6 +43,27 @@ func (cl *CircularLinkedList[T]) AppendAll(data ...T) error {
 			return err
 		}
 	}
+	return nil
+}
+
+// Prepend adds an element in front of the list
+// Time Complexity: O(1)
+// Space Complexity: O(1)
+func (cl *CircularLinkedList[T]) Prepend(data T) error {
+	newNode := list.NewNode(data)
+
+	if cl.head == nil {
+		cl.head = newNode
+		cl.tail = newNode
+		newNode.Next = newNode
+		cl.nodeCount++
+		return nil
+	}
+
+	newNode.Next = cl.head
+	cl.tail.Next = newNode
+	cl.head = newNode
+	cl.nodeCount++
 	return nil
 }
 

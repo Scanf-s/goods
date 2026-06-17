@@ -14,12 +14,15 @@ type (
 	// Generic L could be slice([]) or Node pointer
 	// Generic T could be various builtin types or struct
 	List[T any] interface {
-		// Append adds an element to the end of the list.
+		// Append adds an element at the end of the list.
 		Append(element T) error
 
 		// AppendAll adds all elements to the end of the list.
 		// AppendAll(1, 2, 3) is equivalent to Append(1).Append(2).Append(3)
 		AppendAll(elements ...T) error
+
+		// Prepend adds an element at the head of the list.
+		Prepend(element T) error
 
 		// Add inserts an element at the specific index in the list
 		// It pushes all elements after the specific index to the right

@@ -2,7 +2,7 @@ package linkedlist
 
 import (
 	"fmt"
-	"goods/list"
+	"github.com/Scanf-s/goods/list"
 )
 
 // DoublyLinkedList represents a doubly linked list data structure.
@@ -49,21 +49,40 @@ func (dl *DoublyLinkedList[T]) AppendAll(data ...T) error {
 	return nil
 }
 
-func (dl *DoublyLinkedList[T]) Add(index int, data T) error {
-	if err := dl.checkIndexRange(index); err != nil {
-		return err
+// Prepend adds an element in front of the list
+// Time Complexity: O(1)
+// Space Complexity: O(1)
+func (dl *DoublyLinkedList[T]) Prepend(data T) error {
+	if dl.head == nil {
+		dl.head = list.NewNode(data)
+		dl.tail = dl.head
+		dl.nodeCount++
+		return nil
 	}
 
+	newNode := list.NewNode(data)
+	newNode.Next = dl.head
+	dl.head.Prev = newNode
+	dl.head = newNode
+	dl.nodeCount++
+	return nil
+}
+
+func (dl *DoublyLinkedList[T]) Add(index int, data T) error {
+	if index < 0 || index > dl.nodeCount {
+		return fmt.Errorf("index %d out of range [0, %d]", index, dl.nodeCount)
+	}
+	
 	// Prepare new node
 	newNode := list.NewNode(data)
 
 	// If index refers to the head of the list
 	if index == 0 {
-		newNode.Next = dl.head
-		dl.head.Prev = newNode
-		dl.head = newNode
-		dl.nodeCount++
-		return nil
+		return dl.Prepend(data)
+	}
+
+	if index == dl.nodeCount {
+		return dl.Append(data)
 	}
 
 	currentNode := dl.head

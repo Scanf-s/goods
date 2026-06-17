@@ -4,7 +4,7 @@ package arraystack
 import (
 	"fmt"
 
-	"goods/stack"
+	"github.com/Scanf-s/goods/stack"
 )
 
 // ArrayStack is a LIFO stack implemented using a dynamic array.

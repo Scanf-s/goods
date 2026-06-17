@@ -2,8 +2,8 @@ package linkedlist_queue
 
 import (
 	"fmt"
-	"goods/list/linkedlist"
-	"goods/queue"
+	"github.com/Scanf-s/goods/list/linkedlist"
+	"github.com/Scanf-s/goods/queue"
 )
 
 type LinkedListQueue[T any] struct {
