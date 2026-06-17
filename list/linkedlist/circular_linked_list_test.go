@@ -46,7 +46,7 @@ func TestCircularLinkedList_Append(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			list := NewCircularLinkedList[int]()
 
-			for i := 0; i < tc.appendCount; i++ {
+			for i := range tc.appendCount {
 				err := list.Append(i)
 				if err != nil {
 					t.Errorf("Append failed: %s", err)
@@ -58,7 +58,7 @@ func TestCircularLinkedList_Append(t *testing.T) {
 			}
 
 			// Verify elements are stored correctly
-			for i := 0; i < tc.appendCount; i++ {
+			for i := range tc.appendCount {
 				val, err := list.Get(i)
 				if err != nil {
 					t.Errorf("Get(%d) failed: %s", i, err)
@@ -127,7 +127,7 @@ func TestCircularLinkedList_Append_CircularProperty(t *testing.T) {
 
 	// Traverse full circle
 	current := list.head
-	for i := 0; i < list.Size(); i++ {
+	for range list.Size() {
 		current = current.Next
 	}
 	if current != list.head {
@@ -242,9 +242,44 @@ func TestCircularLinkedList_Add_AtHead(t *testing.T) {
 func TestCircularLinkedList_Add_EmptyList(t *testing.T) {
 	list := NewCircularLinkedList[int]()
 
-	err := list.Add(0, 1)
-	if err == nil {
-		t.Error("Add to empty list should return error")
+	// Add(0) into an empty list seeds it (consistent with Singly/Doubly).
+	if err := list.Add(0, 1); err != nil {
+		t.Errorf("Add(0,1) on empty list should succeed, got: %s", err)
+	}
+	if list.Size() != 1 {
+		t.Errorf("Size = %d, expected 1", list.Size())
+	}
+	if val, _ := list.Get(0); val != 1 {
+		t.Errorf("Get(0) = %d, expected 1", val)
+	}
+	// Single element must still form a closed ring.
+	if list.head.Next != list.head {
+		t.Error("Single element's Next should point to itself")
+	}
+}
+
+func TestCircularLinkedList_Add_Append(t *testing.T) {
+	list := NewCircularLinkedList[int]()
+	if err := list.AppendAll(1, 2, 3); err != nil {
+		t.Errorf("AppendAll failed: %s", err)
+	}
+
+	// Add at index == Size() appends to the end.
+	if err := list.Add(3, 4); err != nil {
+		t.Errorf("Add(3,4) should append, got: %s", err)
+	}
+	if list.tail.Data != 4 {
+		t.Errorf("Tail = %d, expected 4", list.tail.Data)
+	}
+	if list.tail.Next != list.head {
+		t.Error("Tail's Next should point to head after append via Add")
+	}
+
+	expected := []int{1, 2, 3, 4}
+	for i, exp := range expected {
+		if val, _ := list.Get(i); val != exp {
+			t.Errorf("Get(%d) = %d, expected %d", i, val, exp)
+		}
 	}
 }
 
@@ -289,38 +324,28 @@ func TestCircularLinkedList_Get_EmptyList(t *testing.T) {
 	}
 }
 
-func TestCircularLinkedList_Get_CircularIndex(t *testing.T) {
+func TestCircularLinkedList_Get_OutOfRange(t *testing.T) {
 	list := NewCircularLinkedList[int]()
-	var err error
-	if err = list.AppendAll(0, 1, 2); err != nil {
+	if err := list.AppendAll(0, 1, 2); err != nil {
 		t.Errorf("AppendAll failed: %s", err)
 	}
-	// list: [0, 1, 2]
+	// list: [0, 1, 2]; valid indices are 0, 1, 2.
 
-	testCases := []struct {
-		index    int
-		expected int
-	}{
-		{0, 0},
-		{1, 1},
-		{2, 2},
-		{3, 0},  // wraps around
-		{4, 1},  // wraps around
-		{5, 2},  // wraps around
-		{6, 0},  // wraps around twice
-		{-1, 2}, // negative index
-		{-2, 1}, // negative index
-		{-3, 0}, // negative index
-		{-4, 2}, // negative wraps around
+	// In-range indices succeed.
+	for i := range 3 {
+		val, err := list.Get(i)
+		if err != nil {
+			t.Errorf("Get(%d) failed: %s", i, err)
+		}
+		if val != i {
+			t.Errorf("Get(%d) = %d, expected %d", i, val, i)
+		}
 	}
 
-	for _, tc := range testCases {
-		val, err := list.Get(tc.index)
-		if err != nil {
-			t.Errorf("Get(%d) failed: %s", tc.index, err)
-		}
-		if val != tc.expected {
-			t.Errorf("Get(%d) = %d, expected %d", tc.index, val, tc.expected)
+	// Out-of-range indices return an error (no silent wrapping).
+	for _, idx := range []int{3, 4, 6, -1, -4} {
+		if _, err := list.Get(idx); err == nil {
+			t.Errorf("Get(%d) should return an out-of-range error", idx)
 		}
 	}
 }
@@ -436,6 +461,20 @@ func TestCircularLinkedList_Delete_EmptyList(t *testing.T) {
 	}
 }
 
+func TestCircularLinkedList_Delete_OutOfRange(t *testing.T) {
+	list := NewCircularLinkedList[int]()
+	if err := list.AppendAll(1, 2, 3); err != nil {
+		t.Errorf("AppendAll failed: %s", err)
+	}
+
+	if err := list.Delete(3); err == nil {
+		t.Error("Delete(3) on a 3-element list should return an out-of-range error")
+	}
+	if err := list.Delete(-1); err == nil {
+		t.Error("Delete(-1) should return an out-of-range error")
+	}
+}
+
 func TestCircularLinkedList_Clear(t *testing.T) {
 	list := NewCircularLinkedList[int]()
 	var err error
@@ -501,10 +540,9 @@ func TestCircularLinkedList_WithStrings(t *testing.T) {
 		t.Errorf("Get(1) = %s, expected 'world'", val)
 	}
 
-	// Test circular index with strings
-	val, _ = list.Get(2)
-	if val != "hello" {
-		t.Errorf("Get(2) should wrap to 'hello', got '%s'", val)
+	// Out-of-range index returns an error (no wrapping).
+	if _, err = list.Get(2); err == nil {
+		t.Error("Get(2) on a 2-element list should return an out-of-range error")
 	}
 }
 
@@ -528,35 +566,23 @@ func TestCircularLinkedList_WithStructs(t *testing.T) {
 		t.Errorf("Get(0) = %+v, expected Alice/30", val)
 	}
 
-	// Test circular wrap
-	val, _ = list.Get(2)
-	if val.Name != "Alice" {
-		t.Errorf("Get(2) should wrap to Alice, got %s", val.Name)
+	// Out-of-range index returns an error (no wrapping).
+	if _, err = list.Get(2); err == nil {
+		t.Error("Get(2) on a 2-element list should return an out-of-range error")
 	}
 }
 
-func TestCircularLinkedList_Set_CircularIndex(t *testing.T) {
+func TestCircularLinkedList_Set_OutOfRange(t *testing.T) {
 	list := NewCircularLinkedList[int]()
-	var err error
-	if err = list.AppendAll(0, 1, 2); err != nil {
+	if err := list.AppendAll(0, 1, 2); err != nil {
 		t.Errorf("AppendAll failed: %s", err)
 	}
 
-	// Set using wrapped index
-	if err = list.Set(3, 100); err != nil {
-		t.Errorf("Set failed: %s", err)
+	// Out-of-range indices return an error (no silent wrapping).
+	if err := list.Set(3, 100); err == nil {
+		t.Error("Set(3) on a 3-element list should return an out-of-range error")
 	}
-	val, _ := list.Get(0)
-	if val != 100 {
-		t.Errorf("Set(3) should set index 0, got %d at index 0", val)
-	}
-
-	// Set using negative index
-	if err = list.Set(-1, 200); err != nil {
-		t.Errorf("Set failed: %s", err)
-	}
-	val, _ = list.Get(2)
-	if val != 200 {
-		t.Errorf("Set(-1) should set index 2, got %d at index 2", val)
+	if err := list.Set(-1, 200); err == nil {
+		t.Error("Set(-1) should return an out-of-range error")
 	}
 }

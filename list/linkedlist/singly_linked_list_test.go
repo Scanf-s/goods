@@ -46,7 +46,7 @@ func TestSinglyLinkedList_Append(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			list := NewSinglyLinkedList[int]()
 
-			for i := 0; i < tc.appendCount; i++ {
+			for i := range tc.appendCount {
 				err := list.Append(i)
 				if err != nil {
 					t.Errorf("Append failed: %s", err)
@@ -58,7 +58,7 @@ func TestSinglyLinkedList_Append(t *testing.T) {
 			}
 
 			// Verify elements are stored correctly
-			for i := 0; i < tc.appendCount; i++ {
+			for i := range tc.appendCount {
 				val, err := list.Get(i)
 				if err != nil {
 					t.Errorf("Get(%d) failed: %s", i, err)
@@ -192,7 +192,51 @@ func TestSinglyLinkedList_Add_OutOfBounds(t *testing.T) {
 
 	err = list.Add(10, 0)
 	if err == nil {
-		t.Error("Add with index >= size should return error")
+		t.Error("Add with index > size should return error")
+	}
+}
+
+func TestSinglyLinkedList_Add_Append(t *testing.T) {
+	list := NewSinglyLinkedList[int]()
+	if err := list.AppendAll(1, 2); err != nil {
+		t.Errorf("AppendAll failed: %s", err)
+	}
+
+	// Add at index == Size() appends to the end (valid range is [0, Size()]).
+	if err := list.Add(2, 3); err != nil {
+		t.Errorf("Add(2,3) should append, got: %s", err)
+	}
+	if list.Size() != 3 {
+		t.Errorf("Expected size 3, got %d", list.Size())
+	}
+	if val, _ := list.Get(2); val != 3 {
+		t.Errorf("Get(2) = %d, expected 3", val)
+	}
+	// tail must stay correct for a subsequent Append.
+	if err := list.Append(4); err != nil {
+		t.Errorf("Append after Add(size) failed: %s", err)
+	}
+	if val, _ := list.Get(3); val != 4 {
+		t.Errorf("Get(3) = %d, expected 4", val)
+	}
+}
+
+func TestSinglyLinkedList_Add_EmptyList(t *testing.T) {
+	list := NewSinglyLinkedList[int]()
+
+	// Add(0) into an empty list seeds it.
+	if err := list.Add(0, 1); err != nil {
+		t.Errorf("Add(0,1) on empty list should succeed, got: %s", err)
+	}
+	if list.Size() != 1 {
+		t.Errorf("Size = %d, expected 1", list.Size())
+	}
+	// tail must be set so a subsequent Append works.
+	if err := list.Append(2); err != nil {
+		t.Errorf("Append after Add(0) on empty failed: %s", err)
+	}
+	if val, _ := list.Get(1); val != 2 {
+		t.Errorf("Get(1) = %d, expected 2", val)
 	}
 }
 

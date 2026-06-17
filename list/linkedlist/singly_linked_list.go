@@ -94,7 +94,7 @@ func (sl *SinglyLinkedList[T]) Add(index int, data T) error {
 
 	// Move to the position and insert a new node
 	currentNode := sl.head
-	for i := 0; i < index-1; i++ {
+	for range index - 1 {
 		currentNode = currentNode.Next
 	}
 	node := list.NewNode(data)
@@ -113,7 +113,7 @@ func (sl *SinglyLinkedList[T]) Set(index int, data T) error {
 	}
 
 	currentNode := sl.head
-	for i := 0; i < index; i++ {
+	for range index {
 		currentNode = currentNode.Next
 	}
 	currentNode.Data = data
@@ -121,7 +121,7 @@ func (sl *SinglyLinkedList[T]) Set(index int, data T) error {
 }
 
 // Get returns the element at the specified index.
-// If an invalid index is provided, it returns the default value for T type.
+// If the index is out of range, it returns the zero value of T and an error.
 // Time Complexity: O(n)
 // Space Complexity: O(1)
 func (sl *SinglyLinkedList[T]) Get(index int) (T, error) {
@@ -131,7 +131,7 @@ func (sl *SinglyLinkedList[T]) Get(index int) (T, error) {
 	}
 
 	currentNode := sl.head
-	for i := 0; i < index; i++ {
+	for range index {
 		currentNode = currentNode.Next
 	}
 	return currentNode.Data, nil
@@ -188,7 +188,7 @@ func (sl *SinglyLinkedList[T]) Delete(index int) error {
 	}
 
 	currentNode := sl.head
-	for i := 0; i < index-1; i++ {
+	for range index - 1 {
 		currentNode = currentNode.Next
 	}
 	currentNode.Next = currentNode.Next.Next
