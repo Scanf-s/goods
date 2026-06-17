@@ -55,3 +55,17 @@ func (llq *LinkedListQueue[T]) Poll() (T, error) {
 	}
 	return element, nil
 }
+
+func (llq *LinkedListQueue[T]) Size() int {
+	if llq == nil {
+		return 0
+	}
+	return llq.list.Size()
+}
+
+func (llq *LinkedListQueue[T]) IsEmpty() bool {
+	if llq == nil {
+		return true
+	}
+	return llq.list.IsEmpty()
+}

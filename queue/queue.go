@@ -10,5 +10,11 @@ type (
 
 		// Poll is returns an element in front of the queue as well as removes the front element.
 		Poll() (T, error)
+
+		// Size returns the number of elements in the queue.
+		Size() int
+
+		// IsEmpty returns true if the queue has no elements.
+		IsEmpty() bool
 	}
 )

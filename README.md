@@ -1,6 +1,8 @@
 # Goods
 
-Data structures and Algorithm implementation using Golang for study and review with Claude.
+Data structures and algorithms implemented in Go (generics), for study and review.
+
+The goal is to understand how each structure works by building it from scratch.
 
 ## Data Structures
 
@@ -18,7 +20,7 @@ Data structures and Algorithm implementation using Golang for study and review w
 
 #### Queue
 - [ ] ArrayQueue
-- [ ] LinkedQueue
+- [x] LinkedQueue
 - [ ] CircularQueue
 - [ ] Deque (Double-ended Queue)
 - [ ] PriorityQueue
