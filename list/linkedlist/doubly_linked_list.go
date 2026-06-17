@@ -72,9 +72,6 @@ func (dl *DoublyLinkedList[T]) Add(index int, data T) error {
 	if index < 0 || index > dl.nodeCount {
 		return fmt.Errorf("index %d out of range [0, %d]", index, dl.nodeCount)
 	}
-	
-	// Prepare new node
-	newNode := list.NewNode(data)
 
 	// If index refers to the head of the list
 	if index == 0 {
@@ -85,6 +82,8 @@ func (dl *DoublyLinkedList[T]) Add(index int, data T) error {
 		return dl.Append(data)
 	}
 
+	// Prepare new node
+	newNode := list.NewNode(data)
 	currentNode := dl.head
 	for i := 0; i < index-1; i++ {
 		currentNode = currentNode.Next
