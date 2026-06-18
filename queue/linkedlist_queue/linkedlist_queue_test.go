@@ -5,14 +5,14 @@ import "testing"
 func TestLinkedListQueue_New(t *testing.T) {
 	queue := NewLinkedListQueue[int]()
 	if queue == nil {
-		t.Errorf("New stack array has to be initialized")
+		t.Errorf("New linked list queue has to be initialized")
 	}
 }
 
-func TestLinkedListQueue_Push_Integers(t *testing.T) {
+func TestLinkedListQueue_Offer_Poll_Integers(t *testing.T) {
 	queue := NewLinkedListQueue[int]()
 	if queue == nil {
-		t.Errorf("New stack array has to be initialized")
+		t.Errorf("New linked list queue has to be initialized")
 	}
 
 	var err error
