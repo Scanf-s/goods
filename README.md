@@ -19,7 +19,7 @@ The goal is to understand how each structure works by building it from scratch.
 - [x] LinkedStack
 
 #### Queue
-- [ ] ArrayQueue
+- [x] ArrayQueue
 - [x] LinkedQueue
 - [ ] CircularQueue
 - [ ] Deque (Double-ended Queue)
