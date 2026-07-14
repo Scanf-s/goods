@@ -22,29 +22,21 @@ The goal is to understand how each structure works by building it from scratch.
 - [x] ArrayQueue
 - [x] LinkedQueue
 - [x] CircularQueue
-- [x] Deque (Double-ended Queue)
-- [ ] PriorityQueue
+- [x] Deque
 
 ### 2. Tree Data Structures
-
-#### Binary Trees
 - [ ] BinaryTree (basic)
 - [ ] BinarySearchTree (BST)
-- [ ] AVLTree (self-balancing)
-- [ ] RedBlackTree
-
-#### Other Trees
 - [ ] Trie (Prefix Tree)
 - [ ] Heap (MinHeap, MaxHeap)
-- [ ] B-Tree
-- [ ] Segment Tree
 
 ### 3. Hash-based Structures
 - [ ] HashMap
 - [ ] HashSet
-- [ ] BloomFilter
 
 ### 4. Graph
 - [ ] AdjacencyMatrix
 - [ ] AdjacencyList
-- [ ] WeightedGraph
+
+### 5. Cache
+- [ ] LRU Cache
