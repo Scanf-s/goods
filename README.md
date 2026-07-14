@@ -21,7 +21,7 @@ The goal is to understand how each structure works by building it from scratch.
 #### Queue
 - [x] ArrayQueue
 - [x] LinkedQueue
-- [ ] CircularQueue
+- [x] CircularQueue
 - [ ] Deque (Double-ended Queue)
 - [ ] PriorityQueue
 

@@ -2,6 +2,7 @@ package linkedlist
 
 import (
 	"fmt"
+
 	"github.com/Scanf-s/goods/list"
 )
 
@@ -194,6 +195,26 @@ func (cl *CircularLinkedList[T]) Clear() {
 	cl.head = nil
 	cl.tail = nil
 	cl.nodeCount = 0
+}
+
+func (cl *CircularLinkedList[T]) Head() (T, error) {
+	var element T
+	if cl.head == nil {
+		return element, fmt.Errorf("the list is empty")
+	}
+	return cl.head.Data, nil
+}
+
+func (cl *CircularLinkedList[T]) PopHead() (T, error) {
+	var element T
+	if cl.head == nil {
+		return element, fmt.Errorf("the list is empty. Cannot pop the head")
+	}
+	element = cl.head.Data
+	cl.head = cl.head.Next
+	cl.tail = cl.head
+	cl.nodeCount--
+	return element, nil
 }
 
 // checkIndexRange validates that index is within [0, nodeCount).
