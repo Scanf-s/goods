@@ -2,6 +2,7 @@ package linkedlist
 
 import (
 	"fmt"
+
 	"github.com/Scanf-s/goods/list"
 )
 
@@ -140,6 +141,48 @@ func (dl *DoublyLinkedList[T]) Get(index int) (T, error) {
 		currentNode = currentNode.Next
 	}
 	return currentNode.Data, nil
+}
+
+func (dl *DoublyLinkedList[T]) Head() (T, error) {
+	var element T
+	if dl.head == nil {
+		return element, fmt.Errorf("list is empty")
+	}
+	return dl.head.Data, nil
+}
+
+func (dl *DoublyLinkedList[T]) PopHead() (T, error) {
+	var element T
+	if dl.head == nil {
+		return element, fmt.Errorf("list is empty")
+	}
+	element = dl.head.Data
+	dl.head = dl.head.Next
+	dl.head.Prev = dl.tail
+	dl.tail.Next = dl.head
+	dl.nodeCount--
+	return element, nil
+}
+
+func (dl *DoublyLinkedList[T]) Tail() (T, error) {
+	var element T
+	if dl.tail == nil {
+		return element, fmt.Errorf("list is empty")
+	}
+	return dl.tail.Data, nil
+}
+
+func (dl *DoublyLinkedList[T]) PopTail() (T, error) {
+	var element T
+	if dl.tail == nil {
+		return element, fmt.Errorf("list is empty")
+	}
+	element = dl.tail.Data
+	dl.head.Prev = dl.tail.Prev
+	dl.tail = dl.tail.Prev
+	dl.tail.Next = dl.head
+	dl.nodeCount--
+	return element, nil
 }
 
 // Delete removes the element at the specified index, relinking neighbours.

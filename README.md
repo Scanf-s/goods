@@ -22,7 +22,7 @@ The goal is to understand how each structure works by building it from scratch.
 - [x] ArrayQueue
 - [x] LinkedQueue
 - [x] CircularQueue
-- [ ] Deque (Double-ended Queue)
+- [x] Deque (Double-ended Queue)
 - [ ] PriorityQueue
 
 ### 2. Tree Data Structures
