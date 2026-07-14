@@ -25,10 +25,10 @@ The goal is to understand how each structure works by building it from scratch.
 - [x] Deque
 
 ### 2. Tree Data Structures
-- [ ] BinaryTree (basic)
-- [ ] BinarySearchTree (BST)
-- [ ] Trie (Prefix Tree)
-- [ ] Heap (MinHeap, MaxHeap)
+- [ ] BinaryTree
+- [ ] BinarySearchTree
+- [ ] Trie
+- [ ] Heap
 
 ### 3. Hash-based Structures
 - [ ] HashMap
