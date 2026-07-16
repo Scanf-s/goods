@@ -578,3 +578,251 @@ func TestDoublyLinkedList_WithStructs(t *testing.T) {
 		t.Errorf("Get(0) = %+v, expected Alice/30", val)
 	}
 }
+
+// --- Tests for Head / Tail / PopHead / PopTail (added 2026-07-14) ---
+
+func TestDoublyLinkedList_Head(t *testing.T) {
+	list := NewDoublyLinkedList[int]()
+
+	// Head on an empty list must report an error rather than a zero value.
+	if _, err := list.Head(); err == nil {
+		t.Error("Head on an empty list should return an error")
+	}
+
+	if err := list.AppendAll(10, 20, 30); err != nil {
+		t.Errorf("AppendAll failed: %s", err)
+	}
+
+	val, err := list.Head()
+	if err != nil {
+		t.Errorf("Head failed: %s", err)
+	}
+	if val != 10 {
+		t.Errorf("Head = %d, expected 10", val)
+	}
+
+	// Head is a peek: it must not mutate the list.
+	if list.Size() != 3 {
+		t.Errorf("Head should not change size, got %d, expected 3", list.Size())
+	}
+}
+
+func TestDoublyLinkedList_Tail(t *testing.T) {
+	list := NewDoublyLinkedList[int]()
+
+	if _, err := list.Tail(); err == nil {
+		t.Error("Tail on an empty list should return an error")
+	}
+
+	if err := list.AppendAll(10, 20, 30); err != nil {
+		t.Errorf("AppendAll failed: %s", err)
+	}
+
+	val, err := list.Tail()
+	if err != nil {
+		t.Errorf("Tail failed: %s", err)
+	}
+	if val != 30 {
+		t.Errorf("Tail = %d, expected 30", val)
+	}
+
+	if list.Size() != 3 {
+		t.Errorf("Tail should not change size, got %d, expected 3", list.Size())
+	}
+}
+
+func TestDoublyLinkedList_PopHead(t *testing.T) {
+	list := NewDoublyLinkedList[int]()
+
+	// Popping from an empty list must error, not panic.
+	if _, err := list.PopHead(); err == nil {
+		t.Error("PopHead on an empty list should return an error")
+	}
+
+	if err := list.AppendAll(1, 2, 3); err != nil {
+		t.Errorf("AppendAll failed: %s", err)
+	}
+
+	val, err := list.PopHead()
+	if err != nil {
+		t.Errorf("PopHead failed: %s", err)
+	}
+	if val != 1 {
+		t.Errorf("PopHead = %d, expected 1", val)
+	}
+	if list.Size() != 2 {
+		t.Errorf("Size after PopHead = %d, expected 2", list.Size())
+	}
+
+	// The new head is the former second element and, in a (non-circular)
+	// doubly linked list, it must have no dangling Prev pointer.
+	if list.head.Data != 2 {
+		t.Errorf("New head data = %d, expected 2", list.head.Data)
+	}
+	if list.head.Prev != nil {
+		t.Error("New head's Prev should be nil after PopHead")
+	}
+}
+
+func TestDoublyLinkedList_PopHead_DrainOrder(t *testing.T) {
+	list := NewDoublyLinkedList[int]()
+	if err := list.AppendAll(1, 2, 3, 4, 5); err != nil {
+		t.Errorf("AppendAll failed: %s", err)
+	}
+
+	for _, want := range []int{1, 2, 3, 4, 5} {
+		got, err := list.PopHead()
+		if err != nil {
+			t.Fatalf("PopHead failed: %s", err)
+		}
+		if got != want {
+			t.Errorf("PopHead = %d, expected %d", got, want)
+		}
+	}
+
+	if !list.IsEmpty() {
+		t.Errorf("List should be empty after draining, size = %d", list.Size())
+	}
+	if _, err := list.PopHead(); err == nil {
+		t.Error("PopHead on a drained list should return an error")
+	}
+}
+
+func TestDoublyLinkedList_PopHead_SingleElement(t *testing.T) {
+	// A single-element pop is the classic edge case; guard against a panic so
+	// the rest of the package's tests still run and the failure is reported.
+	defer func() {
+		if r := recover(); r != nil {
+			t.Errorf("PopHead on a single-element list should not panic: %v", r)
+		}
+	}()
+
+	list := NewDoublyLinkedList[int]()
+	if err := list.Append(42); err != nil {
+		t.Errorf("Append failed: %s", err)
+	}
+
+	val, err := list.PopHead()
+	if err != nil {
+		t.Errorf("PopHead failed: %s", err)
+	}
+	if val != 42 {
+		t.Errorf("PopHead = %d, expected 42", val)
+	}
+	if !list.IsEmpty() {
+		t.Errorf("List should be empty after popping the only element, size = %d", list.Size())
+	}
+	if _, err := list.PopHead(); err == nil {
+		t.Error("PopHead on the now-empty list should return an error")
+	}
+}
+
+func TestDoublyLinkedList_PopTail(t *testing.T) {
+	list := NewDoublyLinkedList[int]()
+
+	if _, err := list.PopTail(); err == nil {
+		t.Error("PopTail on an empty list should return an error")
+	}
+
+	if err := list.AppendAll(1, 2, 3); err != nil {
+		t.Errorf("AppendAll failed: %s", err)
+	}
+
+	val, err := list.PopTail()
+	if err != nil {
+		t.Errorf("PopTail failed: %s", err)
+	}
+	if val != 3 {
+		t.Errorf("PopTail = %d, expected 3", val)
+	}
+	if list.Size() != 2 {
+		t.Errorf("Size after PopTail = %d, expected 2", list.Size())
+	}
+
+	// The new tail is the former second element and its Next must be nil.
+	if list.tail.Data != 2 {
+		t.Errorf("New tail data = %d, expected 2", list.tail.Data)
+	}
+	if list.tail.Next != nil {
+		t.Error("New tail's Next should be nil after PopTail")
+	}
+}
+
+func TestDoublyLinkedList_PopTail_DrainOrder(t *testing.T) {
+	list := NewDoublyLinkedList[int]()
+	if err := list.AppendAll(1, 2, 3, 4, 5); err != nil {
+		t.Errorf("AppendAll failed: %s", err)
+	}
+
+	for _, want := range []int{5, 4, 3, 2, 1} {
+		got, err := list.PopTail()
+		if err != nil {
+			t.Fatalf("PopTail failed: %s", err)
+		}
+		if got != want {
+			t.Errorf("PopTail = %d, expected %d", got, want)
+		}
+	}
+
+	if !list.IsEmpty() {
+		t.Errorf("List should be empty after draining, size = %d", list.Size())
+	}
+	if _, err := list.PopTail(); err == nil {
+		t.Error("PopTail on a drained list should return an error")
+	}
+}
+
+func TestDoublyLinkedList_PopTail_SingleElement(t *testing.T) {
+	defer func() {
+		if r := recover(); r != nil {
+			t.Errorf("PopTail on a single-element list should not panic: %v", r)
+		}
+	}()
+
+	list := NewDoublyLinkedList[int]()
+	if err := list.Append(42); err != nil {
+		t.Errorf("Append failed: %s", err)
+	}
+
+	val, err := list.PopTail()
+	if err != nil {
+		t.Errorf("PopTail failed: %s", err)
+	}
+	if val != 42 {
+		t.Errorf("PopTail = %d, expected 42", val)
+	}
+	if !list.IsEmpty() {
+		t.Errorf("List should be empty after popping the only element, size = %d", list.Size())
+	}
+	if _, err := list.PopTail(); err == nil {
+		t.Error("PopTail on the now-empty list should return an error")
+	}
+}
+
+func TestDoublyLinkedList_PopHead_PopTail_Mixed(t *testing.T) {
+	list := NewDoublyLinkedList[int]()
+	if err := list.AppendAll(1, 2, 3, 4); err != nil {
+		t.Errorf("AppendAll failed: %s", err)
+	}
+
+	front, err := list.PopHead()
+	if err != nil || front != 1 {
+		t.Errorf("PopHead = %d (err %v), expected 1", front, err)
+	}
+
+	back, err := list.PopTail()
+	if err != nil || back != 4 {
+		t.Errorf("PopTail = %d (err %v), expected 4", back, err)
+	}
+
+	// Remaining list should be [2, 3].
+	if list.Size() != 2 {
+		t.Errorf("Size = %d, expected 2", list.Size())
+	}
+	if h, _ := list.Head(); h != 2 {
+		t.Errorf("Head = %d, expected 2", h)
+	}
+	if tl, _ := list.Tail(); tl != 3 {
+		t.Errorf("Tail = %d, expected 3", tl)
+	}
+}

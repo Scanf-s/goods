@@ -157,10 +157,15 @@ func (dl *DoublyLinkedList[T]) PopHead() (T, error) {
 		return element, fmt.Errorf("list is empty")
 	}
 	element = dl.head.Data
-	dl.head = dl.head.Next
-	dl.head.Prev = dl.tail
-	dl.tail.Next = dl.head
-	dl.nodeCount--
+	if dl.nodeCount == 1 {
+		dl.head = nil
+		dl.tail = nil
+		dl.nodeCount--
+	} else {
+		dl.head = dl.head.Next
+		dl.head.Prev = nil
+		dl.nodeCount--
+	}
 	return element, nil
 }
 
@@ -178,10 +183,15 @@ func (dl *DoublyLinkedList[T]) PopTail() (T, error) {
 		return element, fmt.Errorf("list is empty")
 	}
 	element = dl.tail.Data
-	dl.head.Prev = dl.tail.Prev
-	dl.tail = dl.tail.Prev
-	dl.tail.Next = dl.head
-	dl.nodeCount--
+	if dl.nodeCount == 1 {
+		dl.head = nil
+		dl.tail = nil
+		dl.nodeCount--
+	} else {
+		dl.tail = dl.tail.Prev
+		dl.tail.Next = nil
+		dl.nodeCount--
+	}
 	return element, nil
 }
 

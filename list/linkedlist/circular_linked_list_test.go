@@ -586,3 +586,119 @@ func TestCircularLinkedList_Set_OutOfRange(t *testing.T) {
 		t.Error("Set(-1) should return an out-of-range error")
 	}
 }
+
+// --- Tests for Head / PopHead (added 2026-07-14) ---
+
+func TestCircularLinkedList_Head(t *testing.T) {
+	list := NewCircularLinkedList[int]()
+
+	if _, err := list.Head(); err == nil {
+		t.Error("Head on an empty list should return an error")
+	}
+
+	if err := list.AppendAll(10, 20, 30); err != nil {
+		t.Errorf("AppendAll failed: %s", err)
+	}
+
+	val, err := list.Head()
+	if err != nil {
+		t.Errorf("Head failed: %s", err)
+	}
+	if val != 10 {
+		t.Errorf("Head = %d, expected 10", val)
+	}
+
+	// Head is a peek: it must not mutate the list.
+	if list.Size() != 3 {
+		t.Errorf("Head should not change size, got %d, expected 3", list.Size())
+	}
+}
+
+func TestCircularLinkedList_PopHead(t *testing.T) {
+	list := NewCircularLinkedList[int]()
+
+	if _, err := list.PopHead(); err == nil {
+		t.Error("PopHead on an empty list should return an error")
+	}
+
+	if err := list.AppendAll(1, 2, 3); err != nil {
+		t.Errorf("AppendAll failed: %s", err)
+	}
+
+	val, err := list.PopHead()
+	if err != nil {
+		t.Errorf("PopHead failed: %s", err)
+	}
+	if val != 1 {
+		t.Errorf("PopHead = %d, expected 1", val)
+	}
+	if list.Size() != 2 {
+		t.Errorf("Size after PopHead = %d, expected 2", list.Size())
+	}
+	if list.head.Data != 2 {
+		t.Errorf("New head data = %d, expected 2", list.head.Data)
+	}
+
+	// The ring must remain closed: tail.Next should point to the new head.
+	if list.tail.Next != list.head {
+		t.Error("After PopHead, tail.Next should point back to the new head")
+	}
+}
+
+func TestCircularLinkedList_PopHead_DrainOrder(t *testing.T) {
+	list := NewCircularLinkedList[int]()
+	if err := list.AppendAll(1, 2, 3, 4, 5); err != nil {
+		t.Errorf("AppendAll failed: %s", err)
+	}
+
+	for _, want := range []int{1, 2, 3, 4, 5} {
+		got, err := list.PopHead()
+		if err != nil {
+			t.Fatalf("PopHead failed: %s", err)
+		}
+		if got != want {
+			t.Errorf("PopHead = %d, expected %d", got, want)
+		}
+	}
+	if list.Size() != 0 {
+		t.Errorf("List should be empty and return its size to 0, but got = %d", list.Size())
+	}
+	if !list.IsEmpty() {
+		t.Errorf("List should be empty after draining, size = %d", list.Size())
+	}
+	if _, err := list.PopHead(); err == nil {
+		t.Error("PopHead on a drained list should return an error")
+	}
+}
+
+func TestCircularLinkedList_PopHead_SingleElement(t *testing.T) {
+	defer func() {
+		if r := recover(); r != nil {
+			t.Errorf("PopHead on a single-element list should not panic: %v", r)
+		}
+	}()
+
+	list := NewCircularLinkedList[int]()
+	if err := list.Append(42); err != nil {
+		t.Errorf("Append failed: %s", err)
+	}
+
+	val, err := list.PopHead()
+	if err != nil {
+		t.Errorf("PopHead failed: %s", err)
+	}
+	if val != 42 {
+		t.Errorf("PopHead = %d, expected 42", val)
+	}
+	if !list.IsEmpty() {
+		t.Errorf("List should be empty after popping the only element, size = %d", list.Size())
+	}
+
+	// Once empty, Head and PopHead must both signal emptiness.
+	if _, err := list.Head(); err == nil {
+		t.Error("Head on the now-empty list should return an error")
+	}
+	if _, err := list.PopHead(); err == nil {
+		t.Error("PopHead on the now-empty list should return an error")
+	}
+}

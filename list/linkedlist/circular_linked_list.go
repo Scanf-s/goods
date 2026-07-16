@@ -214,6 +214,11 @@ func (cl *CircularLinkedList[T]) PopHead() (T, error) {
 	cl.head = cl.head.Next
 	cl.tail.Next = cl.head
 	cl.nodeCount--
+	if cl.nodeCount <= 0 {
+		cl.head = nil
+		cl.tail = nil
+		cl.nodeCount = 0
+	}
 	return element, nil
 }
 
