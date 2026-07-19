@@ -39,4 +39,4 @@ The goal is to understand how each structure works by building it from scratch.
 - [ ] AdjacencyList
 
 ### 5. Cache
-- [ ] LRU Cache
+- [x] LRU Cache
