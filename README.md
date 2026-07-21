@@ -25,7 +25,7 @@ The goal is to understand how each structure works by building it from scratch.
 - [x] Deque
 
 ### 2. Tree Data Structures
-- [ ] BinaryTree
+- [x] BinaryTree
 - [ ] BinarySearchTree
 - [ ] Trie
 - [ ] Heap
