@@ -161,3 +161,15 @@ func TestCircularQueue_WithStrings(t *testing.T) {
 		}
 	}
 }
+
+func BenchmarkCircularQueue(b *testing.B) {
+	q := NewCircularQueue[int]()
+	b.ReportAllocs()
+
+	i := 0
+	for b.Loop() {
+		q.Offer(i)
+		q.Poll()
+		i++
+	}
+}
