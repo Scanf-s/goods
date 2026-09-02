@@ -1,7 +1,6 @@
 # Goods
 
-Data structures and algorithms implemented in Go (generics), for study and review.
-
+Data structures implemented in Go, for study and review.
 The goal is to understand how each structure works by building it from scratch.
 
 ## Data Structures
