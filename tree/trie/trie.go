@@ -1,20 +1,3 @@
-// Package trie implements a prefix tree (trie) that stores a set of strings.
-//
-// The trie walks a word rune by rune, so it works with any UTF-8 string and
-// not only with ASCII letters. Every node keeps its children in a map that is
-// keyed by a single rune, and a node is marked when a complete word ends there.
-//
-// The contract below is what the tests in this package expect:
-//
-//   - An empty word is never a valid argument. Insert and Delete reject it with
-//     ErrEmptyWord, and Search always reports false for it.
-//   - An empty prefix is a prefix of every word. StartsWith("") is therefore
-//     true for a trie that holds at least one word, and WordsWithPrefix("")
-//     returns every word in the trie.
-//   - Words are compared by their exact runes, so "Apple" and "apple" are two
-//     different words.
-//   - Delete removes the word and also removes every node that no longer
-//     belongs to another word.
 package trie
 
 import "errors"
@@ -71,22 +54,50 @@ func NewTrie() *Trie {
 // Inserting the same word twice does not change the size of the trie.
 // It returns ErrEmptyWord for an empty word and ErrNilTrie for a nil trie.
 func (t *Trie) Insert(word string) error {
-	// TODO: implement
+	if t == nil {
+		return ErrNilTrie
+	}
+	if word == "" {
+		return ErrEmptyWord
+	}
+	if t.Root == nil {
+		t.Root = NewNode()
+	}
+
+	node := t.Root
+	for _, r := range word {
+		if node.Children == nil {
+			node.Children = make(map[rune]*Node)
+		}
+		if node.Children[r] == nil {
+			node.Children[r] = NewNode()
+		}
+		node = node.Children[r]
+	}
+	if !node.IsEndOfWord {
+		node.IsEndOfWord = true
+		t.size++
+	}
 	return nil
 }
 
 // Search reports whether the exact word is stored in the trie.
 // A prefix of a stored word is not a match unless it was inserted itself.
 func (t *Trie) Search(word string) bool {
-	// TODO: implement
-	return false
+	if word == "" {
+		return false
+	}
+	node := t.findNode(word)
+	return node != nil && node.IsEndOfWord
 }
 
 // StartsWith reports whether at least one stored word begins with the prefix.
 // A stored word counts as a prefix of itself.
 func (t *Trie) StartsWith(prefix string) bool {
-	// TODO: implement
-	return false
+	if t == nil || t.size == 0 {
+		return false
+	}
+	return t.findNode(prefix) != nil
 }
 
 // Delete removes the word from the trie and prunes every node that is no
@@ -94,7 +105,42 @@ func (t *Trie) StartsWith(prefix string) bool {
 // It returns ErrWordNotFound when the word is not stored, ErrEmptyWord for an
 // empty word and ErrNilTrie for a nil trie.
 func (t *Trie) Delete(word string) error {
-	// TODO: implement
+	if t == nil {
+		return ErrNilTrie
+	}
+	if word == "" {
+		return ErrEmptyWord
+	}
+	if t.Root == nil {
+		return ErrWordNotFound
+	}
+
+	// Keep the path so unused nodes can be removed from the bottom up.
+	runes := []rune(word)
+	path := make([]*Node, 1, len(runes)+1)
+	path[0] = t.Root
+	for _, r := range runes {
+		child := path[len(path)-1].Children[r]
+		if child == nil {
+			return ErrWordNotFound
+		}
+		path = append(path, child)
+	}
+
+	last := path[len(path)-1]
+	if !last.IsEndOfWord {
+		return ErrWordNotFound
+	}
+	last.IsEndOfWord = false
+	t.size--
+
+	for i := len(runes) - 1; i >= 0; i-- {
+		child := path[i+1]
+		if child.IsEndOfWord || len(child.Children) != 0 {
+			break
+		}
+		delete(path[i].Children, runes[i])
+	}
 	return nil
 }
 
@@ -103,23 +149,58 @@ func (t *Trie) Delete(word string) error {
 // stable order has to sort the result.
 // It returns an empty result when no word matches.
 func (t *Trie) WordsWithPrefix(prefix string) []string {
-	// TODO: implement
-	return nil
+	start := t.findNode(prefix)
+	if start == nil || t.size == 0 {
+		return nil
+	}
+
+	var words []string
+	var visit func(*Node, string)
+	visit = func(node *Node, word string) {
+		if node.IsEndOfWord {
+			words = append(words, word)
+		}
+		for r, child := range node.Children {
+			visit(child, word+string(r))
+		}
+	}
+	visit(start, prefix)
+	return words
 }
 
 // Size returns the number of distinct words in the trie.
 func (t *Trie) Size() int {
-	// TODO: implement
-	return 0
+	if t == nil {
+		return 0
+	}
+	return t.size
 }
 
 // IsEmpty reports whether the trie holds no word at all.
 func (t *Trie) IsEmpty() bool {
-	// TODO: implement
-	return true
+	return t.Size() == 0
 }
 
 // Clear removes every word from the trie.
 func (t *Trie) Clear() {
-	// TODO: implement
+	if t == nil {
+		return
+	}
+	t.Root = NewNode()
+	t.size = 0
+}
+
+// findNode follows a path of runes from the root. A missing path returns nil.
+func (t *Trie) findNode(path string) *Node {
+	if t == nil || t.Root == nil {
+		return nil
+	}
+	node := t.Root
+	for _, r := range path {
+		node = node.Children[r]
+		if node == nil {
+			return nil
+		}
+	}
+	return node
 }
