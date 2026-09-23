@@ -48,7 +48,7 @@ BenchmarkCircularQueue-12     46714058   24.15 ns/op    24 B/op    1 allocs/op
 ### 2. Tree Data Structures
 - [x] BinaryTree
 - [x] BinarySearchTree
-- [ ] Trie
+- [x] Trie
 - [ ] Heap
 
 ### 3. Hash-based Structures
